@@ -16,4 +16,4 @@ fuseki:serviceReadGraphStore        "get" ;
 fuseki:dataset                      :dataset .
 
 :dataset a tdb2:DatasetTDB2 ;
-tdb2:location "TDB2" .
+tdb2:location "/dataset" .
