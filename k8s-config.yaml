@@ -3,11 +3,11 @@ kind: StatefulSet
 metadata:
   name: fuseki-docker
 spec:
-  serviceName: "fuseki-docker"
-  replicas: 1
   selector:
     matchLabels:
       app: fuseki-docker
+  serviceName: fuseki-docker
+  replicas: 1
   template:
     metadata:
       labels:
@@ -16,13 +16,15 @@ spec:
       containers:
         - name: fuseki-docker
           image: docker.io/amannm/fuseki-docker
+          imagePullPolicy: Always
           resources:
             requests:
-              memory: "384M"
-              cpu: "0.1"
+              cpu: 200m
+              memory: 512M
           ports:
-            - containerPort: 3030
-              name: fuseki
+            - name: fuseki
+              protocol: TCP
+              containerPort: 3030
           volumeMounts:
             - name: dataset
               mountPath: /dataset
@@ -34,7 +36,7 @@ spec:
         - ReadWriteOnce
         resources:
           requests:
-            storage: 1Gi
+            storage: 5Gi
 ---
 apiVersion: v1
 kind: Service
@@ -43,10 +45,10 @@ metadata:
   labels:
     app: fuseki-docker
 spec:
-  ports:
-    - port: 3030
-      protocol: TCP
-      name: fuseki
-  clusterIP: None
   selector:
     app: fuseki-docker
+  clusterIP: None
+  ports:
+    - name: fuseki
+      protocol: TCP
+      port: 3030
